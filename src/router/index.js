@@ -1,11 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useUserStore } from '@/stores'
 import LoginPage from '@/views/login/LoginPage.vue'
 import LayoutContainer from '@/views/layout/LayoutContainer.vue'
 import ArticleChannel from '@/views/article/ArticleChannel.vue'
 import ArticleManage from '@/views/article/ArticleManage.vue'
 import UserAvatar from '@/views/user/UserAvatar.vue'
 import UserProfile from '@/views/user/UserProfile.vue'
-import UsePassword from '@/views/user/UsePassword.vue'
+import UserPassword from '@/views/user/UserPassword.vue'
 
 // creatRouter 创建路由实例
 // 配置history模式
@@ -36,16 +37,24 @@ const router = createRouter({
           component: UserProfile
         },
         {
-          path: '/user/avator',
+          path: '/user/avatar',
           component: UserAvatar
         },
         {
           path: '/user/password',
-          component: UsePassword
+          component: UserPassword
         }
       ]
     }
   ]
+})
+// 导航守卫
+router.beforeEach(async (to) => {
+  const userStore = useUserStore()
+  if (!userStore.token && to.path !== '/login') {
+    return '/login'
+  }
+  return true
 })
 
 export default router
